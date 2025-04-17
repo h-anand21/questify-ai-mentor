@@ -1,13 +1,74 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState } from 'react';
+import Header from '@/components/Header';
+import QuestionInput from '@/components/QuestionInput';
+import VoiceInput from '@/components/VoiceInput';
+import ImageInput from '@/components/ImageInput';
+import AnswerDisplay from '@/components/AnswerDisplay';
+import Footer from '@/components/Footer';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const Index = () => {
+  const [answer, setAnswer] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleQuestionSubmit = async (question: string) => {
+    setIsLoading(true);
+    setAnswer('');
+    
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/chat/ask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setTimeout(() => {
+        setAnswer(data.response || "I couldn't generate a response. Please try a different question.");
+        setIsLoading(false);
+      }, 500); // Small delay for better UX
+    } catch (error) {
+      console.error('Error:', error);
+      setAnswer('Error: Could not connect to the AI service. Please check your connection and try again.');
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <>
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <Header />
+            <ErrorBoundary>
+              <QuestionInput onSubmit={handleQuestionSubmit} isLoading={isLoading} />
+            </ErrorBoundary>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <ErrorBoundary>
+                <VoiceInput />
+              </ErrorBoundary>
+              <ErrorBoundary>
+                <ImageInput />
+              </ErrorBoundary>
+            </div>
+          </div>
+          
+          <div className="lg:pl-6">
+            <ErrorBoundary>
+              <AnswerDisplay answer={answer} isLoading={isLoading} />
+            </ErrorBoundary>
+          </div>
+        </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 };
 
