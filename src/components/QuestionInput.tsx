@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { SendIcon } from 'lucide-react';
+import { SendIcon, MicrophoneIcon, ImageIcon } from './icons';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 
@@ -22,25 +22,44 @@ const QuestionInput = ({ onSubmit, isLoading }: QuestionInputProps) => {
 
   return (
     <div className="w-full bg-[#343541] px-4">
-      <form onSubmit={handleSubmit} className="relative max-w-3xl mx-auto">
+      <form onSubmit={handleSubmit} className="relative max-w-3xl mx-auto flex items-center space-x-2">
+        <Button 
+          type="button" 
+          variant="ghost" 
+          size="icon" 
+          className="text-gray-400 hover:text-gray-200" 
+          disabled
+        >
+          <MicrophoneIcon className="w-5 h-5" />
+        </Button>
+        
+        <Button 
+          type="button" 
+          variant="ghost" 
+          size="icon" 
+          className="text-gray-400 hover:text-gray-200" 
+          disabled
+        >
+          <ImageIcon className="w-5 h-5" />
+        </Button>
+        
         <Textarea
-          className="w-full min-h-[60px] p-4 pr-16 rounded-lg bg-[#40414f] border border-gray-600 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 text-white placeholder-gray-400 resize-none"
+          className="flex-1 min-h-[60px] p-4 pr-16 rounded-lg bg-[#40414f] border border-gray-600 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 text-white placeholder-gray-400 resize-none"
           placeholder="Type your question here..."
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           disabled={isLoading}
         />
-        <div className="absolute right-3 bottom-3">
-          <Button
-            type="submit"
-            variant="default"
-            size="icon"
-            className="bg-teal-500 text-white hover:bg-teal-600"
-            disabled={isLoading || !question.trim()}
-          >
-            <SendIcon className="w-5 h-5" />
-          </Button>
-        </div>
+        
+        <Button
+          type="submit"
+          variant="default"
+          size="icon"
+          className="bg-teal-500 text-white hover:bg-teal-600"
+          disabled={isLoading || !question.trim()}
+        >
+          <SendIcon className="w-5 h-5" />
+        </Button>
       </form>
     </div>
   );
