@@ -2,6 +2,10 @@
 import React from 'react';
 import { BrainIcon } from './icons';
 
+interface IconProps {
+  className?: string;
+}
+
 const Header = () => {
   return (
     <header className="mb-8 text-center">
