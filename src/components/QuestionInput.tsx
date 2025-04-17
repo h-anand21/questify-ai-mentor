@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { SendIcon } from './icons';
 
 interface QuestionInputProps {
@@ -16,15 +16,6 @@ const QuestionInput = ({ onSubmit, isLoading }: QuestionInputProps) => {
     "What is the Pythagorean theorem?",
     "How to develop critical thinking skills?",
   ]);
-  const [displayedExamples, setDisplayedExamples] = useState<string[]>([]);
-
-  useEffect(() => {
-    // Select 3 random examples to display
-    const randomExamples = [...examples]
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 3);
-    setDisplayedExamples(randomExamples);
-  }, [examples]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,17 +24,12 @@ const QuestionInput = ({ onSubmit, isLoading }: QuestionInputProps) => {
     }
   };
 
-  const useExample = (example: string) => {
-    setQuestion(example);
-  };
-
   return (
-    <div className="input-container">
-      <h2 className="text-xl font-semibold mb-4">Ask a Question</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4 relative">
+    <div className="w-full">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="relative">
           <textarea
-            className="w-full min-h-[120px] p-3 rounded-md border border-input focus:border-primary focus:ring-1 focus:ring-primary resize-none"
+            className="w-full min-h-[120px] p-4 rounded-lg bg-[#40414f] border border-gray-600 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 text-white placeholder-gray-400 resize-none"
             placeholder="Type your question here..."
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
@@ -51,21 +37,21 @@ const QuestionInput = ({ onSubmit, isLoading }: QuestionInputProps) => {
           />
           <button 
             type="submit" 
-            className="absolute bottom-3 right-3 primary-button p-2 rounded-full transition-all"
+            className="absolute bottom-3 right-3 p-2 rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             disabled={isLoading || !question.trim()}
           >
-            <SendIcon />
+            <SendIcon className="w-5 h-5" />
           </button>
         </div>
-        <div className="text-sm text-muted-foreground">
-          <p>Ask anything! Try:</p>
+        <div className="text-sm text-gray-400">
+          <p>Try these examples:</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            {displayedExamples.map((example, index) => (
+            {examples.map((example, index) => (
               <button
                 key={index}
                 type="button"
-                onClick={() => useExample(example)}
-                className="text-xs px-3 py-1.5 bg-secondary/70 hover:bg-secondary text-secondary-foreground rounded-full transition-colors"
+                onClick={() => setQuestion(example)}
+                className="text-xs px-3 py-1.5 bg-[#40414f] hover:bg-[#4a4b57] rounded-full transition-colors"
                 disabled={isLoading}
               >
                 {example}

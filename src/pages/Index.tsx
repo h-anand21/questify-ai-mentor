@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import QuestionInput from '@/components/QuestionInput';
@@ -42,10 +41,10 @@ const Index = () => {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-[#343541] text-white">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 gap-8">
+          <div className="space-y-6 max-w-3xl mx-auto w-full">
             <Header />
             <ErrorBoundary>
               <QuestionInput onSubmit={handleQuestionSubmit} isLoading={isLoading} />
@@ -58,9 +57,6 @@ const Index = () => {
                 <ImageInput />
               </ErrorBoundary>
             </div>
-          </div>
-          
-          <div className="lg:pl-6">
             <ErrorBoundary>
               <AnswerDisplay answer={answer} isLoading={isLoading} />
             </ErrorBoundary>
@@ -68,7 +64,7 @@ const Index = () => {
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 
