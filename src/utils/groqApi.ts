@@ -5,7 +5,8 @@ import Groq from "groq-sdk";
 // IMPORTANT: In a production environment, you should store this key securely
 // and not directly in the code
 const groq = new Groq({
-  apiKey: "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"
+  apiKey: "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",
+  dangerouslyAllowBrowser: true // Add this option to allow browser usage
 });
 
 export const getGroqChatCompletion = async (userQuestion: string) => {
