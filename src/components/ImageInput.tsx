@@ -1,9 +1,33 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ImageIcon } from './icons';
+import { processImageWithGroq } from '@/utils/groqApi';
+import { toast } from 'sonner';
 
 const ImageInput = () => {
-  // Image processing functionality is commented out as in the original code
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      const result = await processImageWithGroq(file);
+      toast.success(`Image processed successfully! File ID: ${result.fileId}`);
+    } catch (error) {
+      console.error('Error processing image:', error);
+      toast.error('Failed to process image. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   return (
     <div className="input-container mt-6">
       <div className="flex items-center gap-2 mb-4">
@@ -24,25 +48,23 @@ const ImageInput = () => {
                   <span className="font-semibold">Click to upload</span> or drag and drop
                 </p>
               </div>
-              <input id="image-upload" type="file" className="hidden" disabled />
+              <input 
+                id="image-upload" 
+                type="file" 
+                className="hidden" 
+                accept="image/*"
+                onChange={handleImageUpload}
+                disabled={isProcessing}
+              />
             </label>
           </div>
         </div>
-        <div className="mb-4">
-          <input
-            type="text"
-            className="w-full p-3 rounded-md border border-input"
-            placeholder="Question about the image (optional)"
-            disabled
-          />
-        </div>
-        <button className="primary-button w-full" disabled>
-          Upload & Process
-        </button>
+        {isProcessing && (
+          <p className="text-sm text-muted-foreground text-center">
+            Processing image...
+          </p>
+        )}
       </form>
-      <p className="text-sm text-muted-foreground mt-3 italic">
-        Image analysis functionality coming soon
-      </p>
     </div>
   );
 };

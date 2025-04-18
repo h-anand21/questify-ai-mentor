@@ -1,4 +1,3 @@
-
 import Groq from "groq-sdk";
 
 // Create a new Groq client
@@ -8,6 +7,31 @@ const groq = new Groq({
   apiKey: "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",
   dangerouslyAllowBrowser: true // Add this option to allow browser usage
 });
+
+export const processImageWithGroq = async (imageFile: File) => {
+  try {
+    // Create a blob from the file
+    const blob = new Blob([imageFile]);
+    const file = new File([blob], imageFile.name);
+
+    // Upload file to Groq
+    const uploadedFile = await groq.files.create({
+      file: file,
+      purpose: 'batch'
+    });
+
+    console.log('File uploaded:', uploadedFile.id);
+    return {
+      fileId: uploadedFile.id,
+      filename: uploadedFile.filename,
+      bytes: uploadedFile.bytes,
+      createdAt: uploadedFile.created_at
+    };
+  } catch (error) {
+    console.error("Error with Groq API file upload:", error);
+    throw new Error("Failed to process image with Groq API");
+  }
+};
 
 export const getGroqChatCompletion = async (userQuestion: string) => {
   try {
