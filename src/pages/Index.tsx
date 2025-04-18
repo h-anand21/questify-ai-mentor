@@ -1,9 +1,12 @@
+
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import QuestionInput from '@/components/QuestionInput';
 import AnswerDisplay from '@/components/AnswerDisplay';
 import Footer from '@/components/Footer';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { getGroqChatCompletion } from '@/utils/groqApi';
+import { toast } from 'sonner';
 
 const Index = () => {
   const [answer, setAnswer] = useState('');
@@ -14,26 +17,13 @@ const Index = () => {
     setAnswer('');
     
     try {
-      const response = await fetch('http://localhost:8000/api/v1/chat/ask', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ question }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Server responded with status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setTimeout(() => {
-        setAnswer(data.response || "I couldn't generate a response. Please try a different question.");
-        setIsLoading(false);
-      }, 500); // Small delay for better UX
+      const response = await getGroqChatCompletion(question);
+      setAnswer(response);
     } catch (error) {
       console.error('Error:', error);
+      toast.error('Error: Could not connect to the AI service. Please try again.');
       setAnswer('Error: Could not connect to the AI service. Please check your connection and try again.');
+    } finally {
       setIsLoading(false);
     }
   };

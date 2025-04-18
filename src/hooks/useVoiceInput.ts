@@ -1,24 +1,49 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { toast } from 'sonner';
 
 export const useVoiceInput = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
+  const [transcript, setTranscript] = useState('');
 
+  // Initialize speech recognition
   const startRecording = useCallback(() => {
     if (!('webkitSpeechRecognition' in window)) {
-      alert('Speech recognition is not supported in this browser.');
-      return;
+      toast.error('Speech recognition is not supported in this browser.');
+      return null;
     }
 
     const SpeechRecognition = window.webkitSpeechRecognition;
     const newRecognition = new SpeechRecognition();
     
     newRecognition.continuous = false;
-    newRecognition.interimResults = false;
+    newRecognition.interimResults = true;
+    newRecognition.lang = 'en-US';
+
+    newRecognition.onstart = () => {
+      setIsRecording(true);
+      setTranscript('');
+      toast.info('Listening...');
+    };
+
+    newRecognition.onresult = (event) => {
+      const current = event.resultIndex;
+      const newTranscript = event.results[current][0].transcript;
+      setTranscript(newTranscript);
+    };
+
+    newRecognition.onerror = (event) => {
+      console.error('Speech recognition error', event.error);
+      toast.error(`Error: ${event.error}`);
+      stopRecording();
+    };
+
+    newRecognition.onend = () => {
+      setIsRecording(false);
+    };
 
     setRecognition(newRecognition);
-    setIsRecording(true);
     newRecognition.start();
 
     return newRecognition;
@@ -31,5 +56,14 @@ export const useVoiceInput = () => {
     }
   }, [recognition]);
 
-  return { isRecording, startRecording, stopRecording };
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      if (recognition) {
+        recognition.stop();
+      }
+    };
+  }, [recognition]);
+
+  return { isRecording, transcript, startRecording, stopRecording };
 };
