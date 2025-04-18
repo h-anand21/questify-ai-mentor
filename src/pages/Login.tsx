@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -12,8 +12,8 @@ const Login = () => {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // If already authenticated, redirect to dashboard
-  React.useEffect(() => {
+  // Redirect to dashboard if already authenticated
+  useEffect(() => {
     if (isAuthenticated) {
       navigate('/dashboard');
     }
@@ -36,8 +36,8 @@ const Login = () => {
     <div className="min-h-screen bg-[#343541] flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-[#444654] p-8 rounded-lg shadow-lg">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-gray-300">Sign in to access your dashboard</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Welcome</h1>
+          <p className="text-gray-300">Please sign in to continue</p>
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-6">
