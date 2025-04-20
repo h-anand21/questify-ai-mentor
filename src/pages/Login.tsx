@@ -14,23 +14,28 @@ const Login = () => {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect to dashboard if already authenticated
+  // Redirect if authenticated
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !email.includes('@')) {
+    if (!validateEmail(email)) {
       toast.error('Please enter a valid email address');
       return;
     }
     
-    if (!password) {
-      toast.error('Please enter your password');
+    if (password.length < 6) {
+      toast.error('Password must be at least 6 characters long');
       return;
     }
     
@@ -47,8 +52,8 @@ const Login = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-500 flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-white/20 backdrop-blur-sm p-8 rounded-lg shadow-lg">
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold text-white mb-2">LOGIN</h1>
-          <p className="text-white text-xl">Sign in to your account</p>
+          <h1 className="text-3xl font-bold text-black mb-2">Welcome Back!</h1>
+          <p className="text-black">Sign in to access your practice questions</p>
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -60,10 +65,10 @@ const Login = () => {
               <Input
                 id="email"
                 type="email"
-                placeholder="User name/E-mail:"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 bg-white/30 border-gray-300 text-white placeholder:text-gray-200 h-12"
+                className="pl-10 bg-white/30 text-black placeholder:text-gray-600 h-12"
                 required
               />
             </div>
@@ -74,10 +79,10 @@ const Login = () => {
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="Password***"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-white/30 border-gray-300 text-white placeholder:text-gray-200 pr-10 h-12"
+                className="bg-white/30 text-black placeholder:text-gray-600 pr-10 h-12"
                 required
               />
               <button 
@@ -86,9 +91,9 @@ const Login = () => {
                 onClick={togglePasswordVisibility}
               >
                 {showPassword ? (
-                  <EyeOff className="text-gray-200" size={20} />
+                  <EyeOff className="text-gray-600" size={20} />
                 ) : (
-                  <Eye className="text-gray-200" size={20} />
+                  <Eye className="text-gray-600" size={20} />
                 )}
               </button>
             </div>
@@ -100,40 +105,18 @@ const Login = () => {
           >
             Login
           </Button>
-
-          <div className="text-center mt-4">
-            <button 
-              type="button" 
-              className="text-gray-200 hover:text-white text-sm"
-            >
-              I forgot my password click here to reset
-            </button>
-          </div>
         </form>
 
-        <div className="mt-12 text-center">
+        <div className="mt-6 text-center">
+          <p className="text-black mb-4">Don't have an account?</p>
           <Link to="/register">
             <Button 
               className="w-full bg-blue-600 hover:bg-blue-700 h-12 text-lg"
             >
-              Register New account
+              Create Account
             </Button>
           </Link>
         </div>
-
-        <div className="absolute top-1/4 right-0 mx-12 hidden lg:block">
-          <div className="text-white text-xl font-bold max-w-xs">
-            <p>Very good works are waiting for you Login Now!!!</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="absolute bottom-8 right-8">
-        <img 
-          src="/lovable-uploads/629690ef-8967-449a-8d4d-454d885d4330.png" 
-          alt="Robot assistant" 
-          className="w-32 h-32 object-contain"
-        />
       </div>
     </div>
   );

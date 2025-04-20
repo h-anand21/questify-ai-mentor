@@ -19,16 +19,16 @@ const Welcome = () => {
           />
         </div>
         
-        <div className="text-white text-center mb-16">
-          <h1 className="text-2xl font-bold mb-2">"From Fractions to Calculus, We've Got You"</h1>
-          <p className="text-xl">"Give us hope that every problem has a solution"</p>
+        <div className="text-black text-center mb-16">
+          <h1 className="text-2xl font-bold mb-2">Daily Practice Questions</h1>
+          <p className="text-xl">Practice questions based on your academic level</p>
         </div>
         
         <Button 
           onClick={() => navigate('/login')}
           className="bg-blue-700 hover:bg-blue-800 text-white px-16 py-6 rounded-full text-xl font-semibold"
         >
-          Let start
+          Let's start
         </Button>
       </div>
       

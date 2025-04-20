@@ -1,22 +1,22 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { LogOut, FileImage, MessageCircle, Headphones } from 'lucide-react';
+import { LogOut, FileImage, MessageCircle, Headphones, BookOpen } from 'lucide-react';
 import ImageInput from '@/components/ImageInput';
 import QuestionInput from '@/components/QuestionInput';
 import AnswerDisplay from '@/components/AnswerDisplay';
 import AudioFeature from '@/components/AudioFeature';
 import { getGroqChatCompletion } from '@/utils/groqApi';
+import PracticeQuestions from '@/components/PracticeQuestions';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [answer, setAnswer] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'chat' | 'images' | 'audio'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'images' | 'audio' | 'practice'>('chat');
 
   useEffect(() => {
     if (!user) {
@@ -85,6 +85,16 @@ const Dashboard = () => {
               <Headphones size={18} />
               <span>Audio</span>
             </button>
+
+            <button 
+              onClick={() => setActiveTab('practice')}
+              className={`flex items-center gap-3 w-full p-3 rounded-md transition-colors ${
+                activeTab === 'practice' ? 'bg-blue-600' : 'hover:bg-blue-700/50'
+              }`}
+            >
+              <BookOpen size={18} />
+              <span>Practice</span>
+            </button>
           </div>
           
           <div className="absolute bottom-4 left-4 right-4">
@@ -131,7 +141,7 @@ const Dashboard = () => {
                 </div>
                 <ImageInput />
               </div>
-            ) : (
+            ) : activeTab === 'audio' ? (
               <div>
                 <div className="mb-8 text-center">
                   <h2 className="text-2xl font-bold">Audio Features</h2>
@@ -139,6 +149,8 @@ const Dashboard = () => {
                 </div>
                 <AudioFeature />
               </div>
+            ) : (
+              <PracticeQuestions />
             )}
           </div>
         </div>
