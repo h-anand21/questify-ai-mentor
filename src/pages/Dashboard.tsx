@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { LogOut, FileImage, MessageCircle } from 'lucide-react';
+import { LogOut, FileImage, MessageCircle, Headphones } from 'lucide-react';
 import ImageInput from '@/components/ImageInput';
 import QuestionInput from '@/components/QuestionInput';
 import AnswerDisplay from '@/components/AnswerDisplay';
+import AudioFeature from '@/components/AudioFeature';
 import { getGroqChatCompletion } from '@/utils/groqApi';
 
 const Dashboard = () => {
@@ -14,9 +16,9 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [answer, setAnswer] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'chat' | 'images'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'images' | 'audio'>('chat');
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!user) {
       navigate('/login');
     }
@@ -46,18 +48,18 @@ const Dashboard = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-[#343541] text-white">
+    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-600 text-white">
       <div className="flex h-screen">
-        <div className="w-64 bg-[#202123] p-4">
+        <div className="w-64 bg-blue-800/50 backdrop-blur-sm p-4">
           <div className="flex items-center justify-center mb-8 mt-4">
-            <h1 className="text-xl font-bold">AI Dashboard</h1>
+            <h1 className="text-2xl font-bold">Math Learning AI</h1>
           </div>
           
           <div className="space-y-2">
             <button 
               onClick={() => setActiveTab('chat')}
               className={`flex items-center gap-3 w-full p-3 rounded-md transition-colors ${
-                activeTab === 'chat' ? 'bg-[#343541]' : 'hover:bg-[#2A2B32]'
+                activeTab === 'chat' ? 'bg-blue-600' : 'hover:bg-blue-700/50'
               }`}
             >
               <MessageCircle size={18} />
@@ -67,16 +69,26 @@ const Dashboard = () => {
             <button 
               onClick={() => setActiveTab('images')}
               className={`flex items-center gap-3 w-full p-3 rounded-md transition-colors ${
-                activeTab === 'images' ? 'bg-[#343541]' : 'hover:bg-[#2A2B32]'
+                activeTab === 'images' ? 'bg-blue-600' : 'hover:bg-blue-700/50'
               }`}
             >
               <FileImage size={18} />
               <span>Images</span>
             </button>
+
+            <button 
+              onClick={() => setActiveTab('audio')}
+              className={`flex items-center gap-3 w-full p-3 rounded-md transition-colors ${
+                activeTab === 'audio' ? 'bg-blue-600' : 'hover:bg-blue-700/50'
+              }`}
+            >
+              <Headphones size={18} />
+              <span>Audio</span>
+            </button>
           </div>
           
           <div className="absolute bottom-4 left-4 right-4">
-            <div className="p-3 mb-3 bg-[#3E3F4B] rounded-md">
+            <div className="p-3 mb-3 bg-blue-700/50 backdrop-blur-sm rounded-md">
               <p className="text-sm text-gray-300">Logged in as:</p>
               <p className="font-medium truncate">{user.email}</p>
             </div>
@@ -84,7 +96,7 @@ const Dashboard = () => {
             <Button 
               onClick={handleLogout} 
               variant="outline" 
-              className="w-full border-gray-700 text-white hover:bg-[#444654]"
+              className="w-full border-gray-600 bg-blue-700/30 text-white hover:bg-blue-700/50"
             >
               <LogOut size={18} className="mr-2" />
               Logout
@@ -93,21 +105,41 @@ const Dashboard = () => {
         </div>
         
         <div className="flex-1 overflow-auto">
-          <div className="container mx-auto px-4 py-8 max-w-3xl">
-            <div className="flex flex-col min-h-[calc(100vh-4rem)]">
-              {activeTab === 'chat' ? (
-                <>
-                  <div className="flex-1 flex flex-col">
-                    <AnswerDisplay answer={answer} isLoading={isLoading} />
-                  </div>
-                  <div className="sticky bottom-0 pb-4 bg-[#343541]">
-                    <QuestionInput onSubmit={handleQuestionSubmit} isLoading={isLoading} />
-                  </div>
-                </>
-              ) : (
+          <div className="container mx-auto px-4 py-8 max-w-3xl relative">
+            {activeTab === 'chat' ? (
+              <div className="flex flex-col min-h-[calc(100vh-4rem)]">
+                <div className="mb-8 text-center">
+                  <h2 className="text-2xl font-bold">
+                    "From Fractions to Calculus, We've Got You"
+                  </h2>
+                  <p className="text-lg">
+                    "Give us hope that every problem has a solution"
+                  </p>
+                </div>
+                <div className="flex-1 flex flex-col">
+                  <AnswerDisplay answer={answer} isLoading={isLoading} />
+                </div>
+                <div className="sticky bottom-0 pb-4 bg-gradient-to-t from-blue-500 to-transparent pt-8">
+                  <QuestionInput onSubmit={handleQuestionSubmit} isLoading={isLoading} />
+                </div>
+              </div>
+            ) : activeTab === 'images' ? (
+              <div>
+                <div className="mb-8 text-center">
+                  <h2 className="text-2xl font-bold">Image Processing</h2>
+                  <p className="text-lg">Upload and analyze images of math problems</p>
+                </div>
                 <ImageInput />
-              )}
-            </div>
+              </div>
+            ) : (
+              <div>
+                <div className="mb-8 text-center">
+                  <h2 className="text-2xl font-bold">Audio Features</h2>
+                  <p className="text-lg">Speech-to-text and text-to-speech capabilities</p>
+                </div>
+                <AudioFeature />
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,15 +1,26 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+type UserOccupation = 'Student' | 'Professor/Teacher' | 'Other';
+type UserEducationLevel = 'Class I-V' | 'Class VI-VIII' | 'Class IX-XII' | 'College' | 'Other';
+type CollegeDegree = 'BSC' | 'BCA' | 'B.Tech' | 'CA' | 'BBA' | 'Accountancy' | string;
+
 type User = {
   email: string;
+  fullName?: string;
+  phone?: string;
+  occupation?: UserOccupation;
+  educationLevel?: UserEducationLevel;
+  collegeDegree?: CollegeDegree;
+  verified?: boolean;
 };
 
 type AuthContextType = {
   user: User | null;
-  login: (email: string) => void;
+  login: (email: string, fullUserData?: Partial<User>) => void;
   logout: () => void;
   isAuthenticated: boolean;
+  updateUserProfile: (userData: Partial<User>) => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -17,6 +28,7 @@ const AuthContext = createContext<AuthContextType>({
   login: () => {},
   logout: () => {},
   isAuthenticated: false,
+  updateUserProfile: () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -34,8 +46,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = (email: string) => {
-    const newUser = { email };
+  const login = (email: string, fullUserData?: Partial<User>) => {
+    const newUser = { 
+      email, 
+      ...fullUserData,
+    };
     setUser(newUser);
     setIsAuthenticated(true);
     localStorage.setItem('user', JSON.stringify(newUser));
@@ -47,8 +62,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('user');
   };
 
+  const updateUserProfile = (userData: Partial<User>) => {
+    if (user) {
+      const updatedUser = { ...user, ...userData };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
+    <AuthContext.Provider value={{ user, login, logout, isAuthenticated, updateUserProfile }}>
       {children}
     </AuthContext.Provider>
   );
