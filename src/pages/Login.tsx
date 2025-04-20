@@ -7,6 +7,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff, User } from 'lucide-react';
 
+// Sample user database for validation
+const VALID_USERS = [
+  { email: 'user@example.com', password: 'password123' },
+  { email: 'admin@example.com', password: 'admin123' },
+  { email: 'test@example.com', password: 'test123' }
+];
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,9 +46,16 @@ const Login = () => {
       return;
     }
     
-    login(email);
-    toast.success('Login successful!');
-    navigate('/dashboard');
+    // Check if the user exists and password matches
+    const user = VALID_USERS.find(user => user.email === email && user.password === password);
+    
+    if (user) {
+      login(email);
+      toast.success('Login successful!');
+      navigate('/dashboard');
+    } else {
+      toast.error('Invalid email or password');
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -116,6 +130,12 @@ const Login = () => {
               Create Account
             </Button>
           </Link>
+        </div>
+
+        <div className="mt-6 text-center text-xs text-black/70">
+          <p>For testing, you can use:</p>
+          <p>Email: user@example.com</p>
+          <p>Password: password123</p>
         </div>
       </div>
     </div>
