@@ -16,7 +16,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [answer, setAnswer] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'chat' | 'images' | 'audio' | 'practice'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'images' | 'audio' | 'practice'>('practice');
 
   useEffect(() => {
     if (!user) {
@@ -118,14 +118,6 @@ const Dashboard = () => {
           <div className="container mx-auto px-4 py-8 max-w-3xl relative">
             {activeTab === 'chat' ? (
               <div className="flex flex-col min-h-[calc(100vh-4rem)]">
-                <div className="mb-8 text-center">
-                  <h2 className="text-2xl font-bold">
-                    "From Fractions to Calculus, We've Got You"
-                  </h2>
-                  <p className="text-lg">
-                    "Give us hope that every problem has a solution"
-                  </p>
-                </div>
                 <div className="flex-1 flex flex-col">
                   <AnswerDisplay answer={answer} isLoading={isLoading} />
                 </div>
@@ -134,21 +126,9 @@ const Dashboard = () => {
                 </div>
               </div>
             ) : activeTab === 'images' ? (
-              <div>
-                <div className="mb-8 text-center">
-                  <h2 className="text-2xl font-bold">Image Processing</h2>
-                  <p className="text-lg">Upload and analyze images of math problems</p>
-                </div>
-                <ImageInput />
-              </div>
+              <ImageInput />
             ) : activeTab === 'audio' ? (
-              <div>
-                <div className="mb-8 text-center">
-                  <h2 className="text-2xl font-bold">Audio Features</h2>
-                  <p className="text-lg">Speech-to-text and text-to-speech capabilities</p>
-                </div>
-                <AudioFeature />
-              </div>
+              <AudioFeature />
             ) : (
               <PracticeQuestions />
             )}

@@ -1,13 +1,14 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { BookOpen } from 'lucide-react';
 
 type Question = {
   id: number;
   text: string;
   options: string[];
   correctAnswer: number;
-  level: 'Class-10' | 'Class-12' | 'Bachelor';
+  level: string;
   subject: string;
 };
 
@@ -28,10 +29,32 @@ const sampleQuestions: Question[] = [
     level: 'Class-12',
     subject: 'Mathematics'
   },
+  {
+    id: 3,
+    text: "Solve: 2x + 3 = 11",
+    options: ["x = 4", "x = 5", "x = 3", "x = 6"],
+    correctAnswer: 0,
+    level: 'Class-8',
+    subject: 'Mathematics'
+  },
+  {
+    id: 4,
+    text: "What is the value of π (pi) to two decimal places?",
+    options: ["3.14", "3.15", "3.16", "3.13"],
+    correctAnswer: 0,
+    level: 'Class-6',
+    subject: 'Mathematics'
+  }
+];
+
+const classLevels = [
+  'Class-1', 'Class-2', 'Class-3', 'Class-4', 'Class-5',
+  'Class-6', 'Class-7', 'Class-8', 'Class-9', 'Class-10',
+  'Class-11', 'Class-12', 'Bachelor'
 ];
 
 const PracticeQuestions = () => {
-  const [selectedLevel, setSelectedLevel] = useState<Question['level']>('Class-10');
+  const [selectedLevel, setSelectedLevel] = useState<string>('Class-10');
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -54,31 +77,27 @@ const PracticeQuestions = () => {
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-black mb-4">Practice Questions</h2>
-        <div className="flex gap-4 mb-4">
-          <Button
-            onClick={() => setSelectedLevel('Class-10')}
-            variant={selectedLevel === 'Class-10' ? 'default' : 'outline'}
-          >
-            Class 10
-          </Button>
-          <Button
-            onClick={() => setSelectedLevel('Class-12')}
-            variant={selectedLevel === 'Class-12' ? 'default' : 'outline'}
-          >
-            Class 12
-          </Button>
-          <Button
-            onClick={() => setSelectedLevel('Bachelor')}
-            variant={selectedLevel === 'Bachelor' ? 'default' : 'outline'}
-          >
-            Bachelor
-          </Button>
+        <div className="flex items-center gap-2 mb-4">
+          <BookOpen className="w-6 h-6 text-blue-600" />
+          <h2 className="text-2xl font-bold text-black">Daily Practice Questions</h2>
+        </div>
+        
+        <div className="flex flex-wrap gap-2 mb-4">
+          {classLevels.map((level) => (
+            <Button
+              key={level}
+              onClick={() => setSelectedLevel(level)}
+              variant={selectedLevel === level ? 'default' : 'outline'}
+              className="text-sm"
+            >
+              {level}
+            </Button>
+          ))}
         </div>
       </div>
 
       {!currentQuestion ? (
-        <Button onClick={startPractice}>Start Practice</Button>
+        <Button onClick={startPractice} className="w-full">Start Practice</Button>
       ) : (
         <div className="space-y-4">
           <div className="p-4 bg-gray-50 rounded-lg">
