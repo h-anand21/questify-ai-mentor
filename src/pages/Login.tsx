@@ -54,7 +54,7 @@ const Login = () => {
       toast.success('Login successful!');
       navigate('/dashboard');
     } else {
-      toast.error('Invalid email or password');
+      toast.error('Invalid email or password. Please check your credentials and try again.');
     }
   };
 
